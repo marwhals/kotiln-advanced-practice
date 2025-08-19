@@ -1,4 +1,4 @@
-package docker.practice.typesystem
+package typesystem
 
 object LambdasWithReceivers {
 

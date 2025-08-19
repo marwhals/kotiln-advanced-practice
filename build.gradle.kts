@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.1.0"
 }
 
-group = "docker.practice"
+group = "kotlin.advanced.practice"
 version = "1.0-SNAPSHOT"
 
 repositories {

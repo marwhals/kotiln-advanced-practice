@@ -1,4 +1,4 @@
-package docker.practice.recap
+package recap
 
 object KotlinEssentials {
 
