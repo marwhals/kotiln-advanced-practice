@@ -1,6 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
-    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
+    kotlin("jvm")
 }
 
 group = "kotlin.advanced.practice"
@@ -12,10 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.0.0-1.0.21")
     implementation(project(":builder-lib-annotations"))
-    implementation(project(":builder-lib-impl"))
-    ksp(project(":builder-lib-impl"))
 }
 
 tasks.test {
