@@ -2,47 +2,51 @@ package typesystem
 
 object LambdasWithReceivers {
 
-    // Writing a piece of behavior
-    // option 1 - OO way
+    // Writing a piece of behavior in Kotlin. The options.
+
+    // Option 1 - OO way
     data class Person(val name: String, val age: Int) {
-        fun greet() = "hi, I'm $name"
+        fun greet() = "Hi, I'm $name"
     }
 
-    // option 2 (procedural way) - create a function that takes a person as argument
-    fun greet(p: Person) =
-        "Hi, I'm ${p.name}"
+    // Option 2 - Procedural way - create a function that takes a person as argument
+    fun greet(p: Person) = "Hi, I'm ${p.name}"
 
-    // option 3 - extension method (Kotlin/Scala)
-    fun Person.greetExt() =
+    // option 3 -  defining an extension method (Kotlin/Scala)
+    fun Person.greetExt() = "Hi, I'm $name"
         //  ^^^^^^ RECEIVER type => gives us access to the `this` reference
-        "Hi, I'm $name"
 
-    // option 4 - function value (lambda)
+    // option 4 - Function value (aka - lambda)
     val greetFun: (Person) -> String = { p: Person -> "Hi, I'm ${p.name}" }
+    val greetFun2: (Person) -> String = { "Hi, I'm ${it.name}" } // Equivalent
+
 
     // option 5 - lambda with receiver (an "extension lambda")
     val greetFunRec: Person.() -> String = { "Hi, I'm $name" }
-    //               ^^^^^^ RECEIVER => gives us access to the `this` reference
+    //               ^^^^^^ RECEIVER
 
-    // APIs that look "baked into Kotlin" aka DSL
+    // Why? Gives us APIs that look like they are "baked into Kotlin" aka DSL / look like its a part of the language
     // examples: Ktor, Arrow, coroutines
 
-    // mini-"library" for JSON serialization
+    // Example: mini-"library" for JSON serialization
     // { "name" : "Daniel", "age" : 12 }
-    // support numbers (ints), strings, JSON objects
+    // We want to support numbers (ints), strings, JSON objects
+
     sealed interface JsonValue
-    data class JsonNumber(val value: Int): JsonValue {
+    data class JsonNumber(val value: Int) : JsonValue {
         override fun toString(): String = value.toString()
     }
-    data class JsonString(val value: String): JsonValue {
+
+    data class JsonString(val value: String) : JsonValue {
         override fun toString(): String = "\"$value\""
     }
-    data class JsonObject(val attributes: Map<String, JsonValue>): JsonValue {
+
+    data class JsonObject(val attributes: Map<String, JsonValue>) : JsonValue {
         override fun toString(): String =
-            attributes.toList().joinToString(",","{","}") { pair -> "\"${pair.first}\": ${pair.second}"}
+            attributes.toList().joinToString(",", "{", "}") { pair -> "\"${pair.first}\": ${pair.second}" }
     }
 
-    // "mutable builder" of a JsonObject
+    // Example: "mutable builder" of a JsonObject
     class JSONScope {
         private var props: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -62,15 +66,15 @@ object LambdasWithReceivers {
         }
 
         // "nice API"
-        infix fun String.to(value: String) { // "name" to "Daniel"
+        infix fun String.to(value: String) {
             props[this] = JsonString(value)
         }
 
-        infix fun String.to(value: Int) { // "age" to 12
+        infix fun String.to(value: Int) {
             props[this] = JsonNumber(value)
         }
 
-        infix fun String.to(value: JsonValue) { // "credentials" to ...
+        infix fun String.to(value: JsonValue) {
             props[this] = value
         }
     }
@@ -89,16 +93,22 @@ object LambdasWithReceivers {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val jsonObj = JsonObject(mapOf(
-            "user" to JsonObject(mapOf(
-                "name" to JsonString("Daniel"),
-                "age" to JsonNumber(99)
-            )),
-            "credentials" to JsonObject(mapOf(
-                "type" to JsonString("password"),
-                "value" to JsonString("rockthejvm")
-            ))
-        ))
+        val jsonObj = JsonObject(
+            mapOf(
+                "user" to JsonObject(
+                    mapOf(
+                        "name" to JsonString("Daniel"),
+                        "age" to JsonNumber(99)
+                    )
+                ),
+                "credentials" to JsonObject(
+                    mapOf(
+                        "type" to JsonString("password"),
+                        "value" to JsonString("rockthejvm")
+                    )
+                )
+            )
+        )
 
         val jsonObj_v2 = jsonNotSoNice { j ->
             j.addValue("user", jsonNotSoNice { j2 ->

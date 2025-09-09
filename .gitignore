@@ -43,3 +43,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### put in ~/.gradle/gradle.properties. another time
+gradle.properties

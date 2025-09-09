@@ -26,9 +26,9 @@ package docker.practice.typesystem
 object VariancePositions {
 
     abstract class Animal
-    class Dog: Animal()
-    class Cat: Animal()
-    class Crocodile: Animal()
+    class Dog : Animal()
+    class Cat : Animal()
+    class Crocodile : Animal()
 
     // out = Covariant, in = Contravariant
     // this is illegal
@@ -102,24 +102,24 @@ object VariancePositions {
      */
     // 1 - consume elements in a covariant type
     abstract class LList<out A>
-    data object EmptyList: LList<Nothing>()
-    data class Cons<out A>(val head: A, val tail: LList<A>): LList<A>()
+    data object EmptyList : LList<Nothing>()
+    data class Cons<out A>(val head: A, val tail: LList<A>) : LList<A>()
 
     // how do we add an element?
     // [lassie, hachi, laika].add(togo) => List<Dog>
     // [lassie, hachi, laika].add(garfield) => [lassie, hachi, laika, garfield] => List<Animal>
     // [lassie, hachi, laika].add(45) => [lassie, hachi, laika, 45] => List<Any>
     // solution = widening the type
-    fun <B, A:B> LList<A>.add(elem: B): LList<B> = Cons(elem, this)
+    fun <B, A : B> LList<A>.add(elem: B): LList<B> = Cons(elem, this)
 
     // 2 - return elements in a contravariant type
     // solution = narrow the type
     abstract class Vehicle
-    open class Car: Vehicle()
-    class Supercar: Car()
+    open class Car : Vehicle()
+    class Supercar : Car()
 
-    class RepairShop<in A: Vehicle> {
-        fun <B:A> repair(elem: B): B = elem
+    class RepairShop<in A : Vehicle> {
+        fun <B : A> repair(elem: B): B = elem
     }
 
     @JvmStatic

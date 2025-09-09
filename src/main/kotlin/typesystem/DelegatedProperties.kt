@@ -1,6 +1,6 @@
 package docker.practice.typesystem
 
-import java.util.UUID
+import java.util.*
 import kotlin.properties.Delegates
 import kotlin.random.Random
 import kotlin.reflect.KProperty
@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
  * - Lazy: delay evaluation of a property until first use
  * - Vetoable: accept or deny changes on a condition
  * - Observable: perform arbitary side effects on property changes
- * - Map: access map values in a statically type way
+ * - Map: access map values in a statically typed way
  *
  *
  */
@@ -222,10 +222,12 @@ object DelegatedProperties {
     }
 
     fun demoMapDelegated() {
-        val myDict = WeakObject(mapOf(
-            "size" to 123456,
-            "name" to "Rock the JVM videos"
-        ))
+        val myDict = WeakObject(
+            mapOf(
+                "size" to 123456,
+                "name" to "Rock the JVM videos"
+            )
+        )
         println("Name of dataset: ${myDict.name}") // actually uses attributes.get("name") as String,beware this can crash if "name" is not a key in the map
         println("Size of dataset: ${myDict.size}")
     }
