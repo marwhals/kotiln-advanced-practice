@@ -1,10 +1,10 @@
 package docker.practice.typesystem
 
 /**
- * Variance question: if A extends B, should Thing<A> "extend" Thing<B>?
+ * The Variance question: if A extends B, should Thing<A> "extend" Thing<B>?
  * - yes - covariant
  * - no - invariant
- * - "hell no" - contravariant
+ * - "yeeeee....the other direction" - contravariant
  *
  * How to determine variance
  * - If the type produces (outputs) values of type A, then covariant
@@ -18,9 +18,8 @@ package docker.practice.typesystem
  * - Method return types are in "out" (covariant) position
  *
  * Overcoming problems:
- * - Methods args and covariance: widen the type
- * - Method return types and contravariance: narrow the type
- *
+ * - Methods arguments and covariance: widen the type ---- B will become a subtype of A <B , A:B >
+ * - Method return types and contravariance: narrow the type --- < B : A >
  */
 
 object VariancePositions {
@@ -62,7 +61,7 @@ object VariancePositions {
         container.contents = Gasoline() // guarantee that I can write any Liquid inside, but have to keep it to Water
 
         types of vars are in "in" position (aka contravariant)
-        => must be INVARIANT
+        this they must be INVARIANT when used with a generic type paramenter
      */
 
     //    class LList<out A> {
@@ -97,9 +96,13 @@ object VariancePositions {
         method return types are in "out" (aka covariant) position
      */
 
-    /*
+
+
+    /**
         solve variance positions problems
      */
+
+
     // 1 - consume elements in a covariant type
     abstract class LList<out A>
     data object EmptyList : LList<Nothing>()
@@ -109,10 +112,12 @@ object VariancePositions {
     // [lassie, hachi, laika].add(togo) => List<Dog>
     // [lassie, hachi, laika].add(garfield) => [lassie, hachi, laika, garfield] => List<Animal>
     // [lassie, hachi, laika].add(45) => [lassie, hachi, laika, 45] => List<Any>
+
     // solution = widening the type
     fun <B, A : B> LList<A>.add(elem: B): LList<B> = Cons(elem, this)
 
     // 2 - return elements in a contravariant type
+
     // solution = narrow the type
     abstract class Vehicle
     open class Car : Vehicle()
