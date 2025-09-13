@@ -7,7 +7,7 @@ import kotlin.reflect.full.*
 
 object ReflectionBasics {
 
-    // reflection -----the abilty to inspect and invoke functionality dynamically at runtime
+    // reflection -----the ability to inspect and invoke functionality dynamically *at runtime*
     data class Person(val name: String, val age: Int) {
         var favoriteMovie: String = "Forrest Gump"
         fun fillInTaxForm(authority: String) =
