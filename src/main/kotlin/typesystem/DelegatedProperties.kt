@@ -12,15 +12,14 @@ import kotlin.reflect.KProperty
  * Standard Delegated properties
  * - Lazy: delay evaluation of a property until first use
  * - Vetoable: accept or deny changes on a condition
- * - Observable: perform arbitary side effects on property changes
+ * - Observable: perform arbitrary side effects on property changes
  * - Map: access map values in a statically typed way
- *
  *
  */
 
 object DelegatedProperties {
 
-    // access (get/set) properties and trigger side effects
+    // The goal: access (get/set) properties and trigger side effects
 
     class LoggingClassN(val id: Int) {
         var property: Int = 0
@@ -83,12 +82,12 @@ object DelegatedProperties {
         var stringProperty: String by LoggingProp("$id-stringProperty", "")
     }
 
-    // how delegates work
+    /** how delegates work */
     class LoggingClass_v2(id: Int) {
         var myProperty: Int by LoggingProp("$id-myProperty", 0)
     }
 
-    // translates to
+    /** this translates to */
     class LoggingClass_v2_Expanded(id: Int) {
         private var prop_delegate = LoggingProp("$id-myProperty", 0)
         var myProperty: Int
@@ -113,8 +112,35 @@ object DelegatedProperties {
     }
 
     /**
-     * TODO Exercise 16:00: implement a class Delayed
+     * Exercises: Implement a class Delayed
      */
+    class Delayed<A>(private val func: () -> A) {
+        // TODO 1: add a variable "content" which is a nullable A, starting at null.
+        private var content: A? = null
+
+        operator fun getValue(currentRef: Any, prop: KProperty<*>): A {
+            // TODO 2: check if the content is null, and if not, invoke the `func` constructor arg and return the content
+            if (content == null) {
+                content = func()
+            }
+
+            return content!! // !!--- forces it to be non null
+        }
+    }
+
+    // TODO 3: use it and find out what it means
+    //--> Is a form of lazy evaluation - i.e variable is not set until first use
+    class DelayedClass {
+        val delayedProp: Int by Delayed { // Example and usage as a delegated property
+            println("I'm setting up!")
+            42
+        }
+    }
+
+    fun demoDelayed() {
+        val delayed = DelayedClass()
+    }
+
 
     /*
         Standard Delegated Properties
@@ -181,15 +207,13 @@ object DelegatedProperties {
         var state: State by Delegates.observable(State.NONE) { prop, oldValue, newValue ->
             // can alert a system if the state changes
             println("[dataset - $name] State changed: $oldValue -> $newValue")
-            if (newValue == State.STALE)
-                println("[dataset - $name] Alert: dataset is now stale, refresh data")
+            if (newValue == State.STALE) println("[dataset - $name] Alert: dataset is now stale, refresh data")
         }
 
         private var data: List<String> = listOf()
 
         fun consumeData() {
-            if (state == State.PROCESSED)
-                state = State.STALE
+            if (state == State.PROCESSED) state = State.STALE
             else if (data.isNotEmpty()) {
                 state = State.PROCESSED
                 // we dump the data to some persistent store
@@ -224,8 +248,7 @@ object DelegatedProperties {
     fun demoMapDelegated() {
         val myDict = WeakObject(
             mapOf(
-                "size" to 123456,
-                "name" to "Rock the JVM videos"
+                "size" to 123456, "name" to "Rock the JVM videos"
             )
         )
         println("Name of dataset: ${myDict.name}") // actually uses attributes.get("name") as String,beware this can crash if "name" is not a key in the map
