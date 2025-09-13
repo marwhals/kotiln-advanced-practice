@@ -1,4 +1,4 @@
-package docker.practice.internals
+package internals
 
 import java.io.File
 import kotlin.reflect.*

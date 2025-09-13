@@ -1,4 +1,4 @@
-package docker.practice.internals
+package internals
 
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties

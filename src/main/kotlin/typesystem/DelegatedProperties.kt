@@ -1,4 +1,4 @@
-package docker.practice.typesystem
+package typesystem
 
 import java.util.*
 import kotlin.properties.Delegates

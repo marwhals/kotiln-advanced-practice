@@ -1,20 +1,34 @@
-package docker.practice.internals
+package internals
 
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.random.Random
 
+/**
+ * Contracts
+ * - Define guarantees to the compiler
+ * - Useful for type checking and flow typing
+ *
+ * Important:
+ * - Still need to fulfill requirements otherwise the code will throw a runtime exception / error
+ *
+ */
+
 object Contracts {
 
-    // contracts - code that helps the compiler make some deductions
+    // Contracts -> code that helps the compiler make some deductions
 
-    // info to the compiler about the return value of a function
-    @OptIn(ExperimentalContracts::class)
+    // Information for / to the compiler about the return value of a function
+    /**
+     * Example: Guarantees based on the return value
+     */
+
+    @OptIn(ExperimentalContracts::class) // <--- necessary annotation - experimental feature of the Kotlin compiler
     fun containsJustDigits(str: String?): Boolean {
-        contract {
+        contract { //<------ opens the contract DSL
             // small DSL for testing things about this function
-            returns(true) implies (str != null)
+            returns(true) implies (str != null) // Condition implies compiler guarantee
         }
         return str?.all { it.isDigit() } ?: false
     }
@@ -25,12 +39,13 @@ object Contracts {
             else null
 
         println("I haz maybe string $maybeString")
+        //Compiler has extra information
         if (containsJustDigits(maybeString)) { // containsJustDigits(...) == true AND maybeString != null
             println("String is just a number, I want the length: ${maybeString.length}")
         }
     }
 
-    // more complex example
+    // A more complex example
     open class User(open val username: String, open val email: String) {
         @OptIn(ExperimentalContracts::class)
         fun isValidAdmin(): Boolean {
@@ -82,10 +97,13 @@ object Contracts {
         }
     }
 
+    /**
+     * Contracts also provide guarantees on how lambdas are called
+     */
     @OptIn(ExperimentalContracts::class)
     fun <R: Resource, A> R.bracket(block: (R) -> A): A { // "bracket" pattern
         contract {
-            callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+            callsInPlace(block, InvocationKind.EXACTLY_ONCE) //<---- compiler guarantee. How many times a lambda can be called.
         }
 
         this.open()
@@ -107,8 +125,46 @@ object Contracts {
     }
 
     /*
-        TODO 25:14: Exercise
+        Exercise
      */
+    class GuardianService {
+        init {
+            println("Service initialised.")
+        }
+
+        fun monitorSystem() {
+            println("I shall watch over you........")
+        }
+
+    }
+
+    object GuardianResource {
+        private var resource: GuardianService? = null
+
+        @OptIn(ExperimentalContracts::class)
+        fun getOrCreate(initializer: () -> GuardianService): GuardianService {
+            if (resource == null) {
+                resource = initializer()
+            }
+            return resource!!
+        }
+    }
+
+    fun demoGuardian() {
+        val guardianResource = GuardianResource
+
+        val guardian = guardianResource.getOrCreate {
+            println("creating guardian")
+            GuardianService()
+        }
+        guardian.monitorSystem()
+
+        val guardian_v2 = guardianResource.getOrCreate {
+            println("creating guardian")
+            GuardianService()
+        }
+        guardian.monitorSystem()
+    }
 
     @JvmStatic
     fun main(args: Array<String>) {

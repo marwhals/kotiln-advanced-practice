@@ -1,4 +1,4 @@
-package docker.practice.typesystem
+package typesystem
 
 /**
  * The Variance question: if A extends B, should Thing<A> "extend" Thing<B>?

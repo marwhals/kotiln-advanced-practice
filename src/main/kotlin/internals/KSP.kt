@@ -1,6 +1,8 @@
-package docker.practice.internals
+package internals
 
 import builderksp.Builder
+import docker.practice.internals.PersonBuilder
+import docker.practice.internals.PetBuilder
 
 // Use-case: generate builder patterns for data classes
 @Builder

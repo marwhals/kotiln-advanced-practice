@@ -1,4 +1,4 @@
-package docker.practice.typesystem
+package typesystem
 
 // type aliases have to be declared top-level
 typealias Phonebook = Map<String, String>

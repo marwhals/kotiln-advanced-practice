@@ -1,4 +1,4 @@
-package docker.practice.internals
+package internals
 
 object ReifiedTypes {
 

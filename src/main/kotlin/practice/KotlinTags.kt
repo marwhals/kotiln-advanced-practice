@@ -1,4 +1,4 @@
-package docker.practice.practice
+package practice
 
 import java.io.File
 import java.io.FileWriter
@@ -42,7 +42,8 @@ object KotlinTags {
             children.joinToString( "\n", "<body>", "</body>" )
     }
 
-    data class Div(val children: List<HtmlElement>, val id: String? = null, val className: String? = null): HtmlElement {
+    data class Div(val children: List<HtmlElement>, val id: String? = null, val className: String? = null):
+        HtmlElement {
         override fun toString(): String {
             val idAttr = id?.let {  " id=\"$it\"" } ?: ""
             val classAttr = className?.let {  " class=\"$it\"" } ?: ""
